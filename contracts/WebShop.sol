@@ -92,4 +92,9 @@ contract WebShop {
 
         emit PriceUpdated(_id, _newPrice);
     }
+
+    // Pogledaj istoriju kupovina
+    function getBuyerPurchases(address _buyer) public view returns (uint[] memory) {
+        return buyerPurchases[_buyer];
+    }
 }
