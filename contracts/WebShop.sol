@@ -21,4 +21,9 @@ contract WebShop {
     event ProductRestocked(uint id, uint quantity);
     event PriceUpdated(uint id, uint newPrice);
     event ProductRemoved(uint id);
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not the owner");
+        _;
+    }
 }
