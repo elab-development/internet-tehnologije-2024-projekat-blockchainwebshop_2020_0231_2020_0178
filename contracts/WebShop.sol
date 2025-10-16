@@ -63,4 +63,33 @@ contract WebShop {
 
         emit ProductPurchased(msg.sender, _id, _quantity, msg.value);
     }
+
+    // Dopuna proizvoda
+    function restockProduct(uint _id, uint _quantity) public onlyOwner {
+        Product storage product = products[_id];
+        require(product.id != 0, "Product does not exist");
+        require(_quantity > 0, "Quantity must be > 0");
+
+        product.stock += _quantity;
+
+        emit ProductRestocked(_id, _quantity);
+    }
+
+    // Brisanje proizvoda
+    function removeProduct(uint _id) public onlyOwner {
+        require(products[_id].id != 0, "Product does not exist");
+        delete products[_id];
+        emit ProductRemoved(_id);
+    }
+
+    // Promena cene proizvoda
+    function updatePrice(uint _id, uint _newPrice) public onlyOwner {
+        require(_newPrice > 0, "Price must be > 0");
+        Product storage product = products[_id];
+        require(product.id != 0, "Product does not exist");
+
+        product.price = _newPrice;
+
+        emit PriceUpdated(_id, _newPrice);
+    }
 }
