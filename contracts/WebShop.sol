@@ -26,4 +26,20 @@ contract WebShop {
         require(msg.sender == owner, "Not the owner");
         _;
     }
+
+       constructor() {
+        owner = msg.sender;
+    }
+
+
+    // Dodavanje novog proizvoda
+    function addProduct(string memory _name, uint _price, uint _stock) public onlyOwner {
+        require(_price > 0, "Price must be > 0");
+        require(_stock > 0, "Stock must be > 0");
+
+        uint productId = nextProductId++;
+        products[productId] = Product(productId, _name, _price, _stock);
+
+        emit ProductAdded(productId, _name, _price, _stock);
+    }
 }
