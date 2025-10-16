@@ -42,4 +42,25 @@ contract WebShop {
 
         emit ProductAdded(productId, _name, _price, _stock);
     }
+
+   // Kupovina proizvoda
+    function buyProduct(uint _id, uint _quantity) public payable {
+        Product storage product = products[_id];
+        require(product.id != 0, "Product does not exist");
+        require(_quantity > 0, "Quantity must be > 0");
+        require(product.stock >= _quantity, "Not enough stock");
+        require(msg.value >= product.price * _quantity, "Not enough ETH sent");
+
+        product.stock -= _quantity;
+
+        for(uint i = 0; i < _quantity; i++) {
+            buyerPurchases[msg.sender].push(_id);
+        }
+
+        // Pošalji ETH vlasniku
+        (bool sent, ) = owner.call{value: msg.value}("");
+        require(sent, "Failed to send ETH");
+
+        emit ProductPurchased(msg.sender, _id, _quantity, msg.value);
+    }
 }
