@@ -20,15 +20,17 @@ contract WebShop {
     event ProductPurchased(address buyer, uint id, uint quantity, uint totalPrice);
     event ProductRestocked(uint id, uint quantity);
     event PriceUpdated(uint id, uint newPrice);
+    event ProductRemoved(uint id);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Not the owner");
         _;
     }
 
-    constructor() {
+       constructor() {
         owner = msg.sender;
     }
+
 
     // Dodavanje novog proizvoda
     function addProduct(string memory _name, uint _price, uint _stock) public onlyOwner {
@@ -41,7 +43,7 @@ contract WebShop {
         emit ProductAdded(productId, _name, _price, _stock);
     }
 
-    // Kupovina proizvoda
+   // Kupovina proizvoda
     function buyProduct(uint _id, uint _quantity) public payable {
         Product storage product = products[_id];
         require(product.id != 0, "Product does not exist");
@@ -77,6 +79,7 @@ contract WebShop {
     function removeProduct(uint _id) public onlyOwner {
         require(products[_id].id != 0, "Product does not exist");
         delete products[_id];
+        emit ProductRemoved(_id);
     }
 
     // Promena cene proizvoda
