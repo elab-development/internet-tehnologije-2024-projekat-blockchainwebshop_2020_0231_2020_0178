@@ -340,6 +340,7 @@
 
 .confirm-item {
   display: flex;
+  color: black;
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 0;
@@ -360,6 +361,7 @@
 }
 
 .wallet-info {
+  color: black;
   display: flex;
   justify-content: space-between;
   align-items: center;
