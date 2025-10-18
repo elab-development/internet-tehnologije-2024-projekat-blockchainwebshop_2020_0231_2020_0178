@@ -103,7 +103,7 @@ const Footer = () => {
             <span className="stat-icon">⛓️</span>
             <div className="stat-info">
               <div className="stat-value">Ethereum</div>
-              <div className="stat-label">Blockchain mreža</div>
+              <div className="stat-label">Blockchain mrežaa</div>
             </div>
           </div>
           
