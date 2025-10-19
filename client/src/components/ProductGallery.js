@@ -1,82 +1,13 @@
 import React, { useState } from 'react';
 import './ProductGallery.css';
+import defaultProducts from '../data/products';
 
 const ProductGallery = ({ products, onBuy, account, onRefresh }) => {
   const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('name');
 
-  // Mock podatci za dresove ako nema proizvoda iz blockchain-a
-  const mockProducts = [
-    {
-      id: 1,
-      name: 'FC Barcelona Home 24/25',
-      price: '0.05', // ETH
-      priceWei: '50000000000000000', // 0.05 ETH u wei
-      stock: 15,
-      category: 'home',
-      image: '/images/barcelona.webp',
-      description: 'Originalni Barcelona dres za sezonu 2024/25',
-      features: ['Nike Original', 'Dri-FIT Tehnologija', 'Camp Nou Edition', 'La Liga']
-    },
-    {
-      id: 2,
-      name: 'Real Madrid Home 23/24',
-      price: '0.055',
-      priceWei: '55000000000000000',
-      stock: 12,
-      category: 'home',
-      image: '/images/ADIDAS-REAL-MADRID-DRES-ZA-ODRASLE-2023-24-05-PhotoRoom.png-PhotoRoom.png',
-      description: 'Originalni Real Madrid domaći dres za sezonu 2023/24',
-      features: ['Adidas Original', 'Hala Madrid', 'Champions League', 'Santiago Bernabéu']
-    },
-    {
-      id: 3,
-      name: 'Manchester United Home 23/24',
-      price: '0.052',
-      priceWei: '52000000000000000',
-      stock: 12,
-      category: 'home',
-      image: '🔴⚪',
-      description: 'Klasični crveni dres Manchester United-a',
-      features: ['Theatre of Dreams', 'Premium Quality', 'Fan Edition']
-    },
-    {
-      id: 4,
-      name: 'PSG Third Kit 25/26',
-      price: '0.058',
-      priceWei: '58000000000000000',
-      stock: 20,
-      category: 'third',
-      image: '/images/psg-25-26-third-kit (6).jpg',
-      description: 'PSG treći dres sa modernim dizajnom za sezonu 25/26',
-      features: ['Paris Saint-Germain', 'Jordan Brand', 'Limited Release', 'Parc des Princes']
-    },
-    {
-      id: 5,
-      name: 'Liverpool Home 25/26',
-      price: '0.054',
-      priceWei: '54000000000000000',
-      stock: 18,
-      category: 'home',
-      image: '/images/liverpool-authentic-home-shirt-25-26.jpg',
-      description: 'Authentic Liverpool crveni dres za sezonu 25/26',
-      features: ['You\'ll Never Walk Alone', 'Anfield Special', 'Nike Authentic', 'Premier League']
-    },
-    {
-      id: 6,
-      name: 'Bayern Munich Away 24/25',
-      price: '0.053',
-      priceWei: '53000000000000000',
-      stock: 7,
-      category: 'away',
-      image: '/images/bayern.jpg',
-      description: 'Bayern Munich gostujući dres za sezonu 24/25',
-      features: ['Mia San Mia', 'Bundesliga Champions', 'Allianz Arena', 'Adidas Quality']
-    }
-  ];
-
-  // Koristi blockchain proizvode ako postoje, inače koristi mock podatke
-  const displayProducts = products && products.length > 0 ? products : mockProducts;
+  // Koristi blockchain proizvode ako postoje, inače koristi default proizvode iz deploy skripte
+  const displayProducts = products && products.length > 0 ? products : defaultProducts;
 
   const filteredProducts = displayProducts.filter(product => {
     if (filter === 'all') return true;
