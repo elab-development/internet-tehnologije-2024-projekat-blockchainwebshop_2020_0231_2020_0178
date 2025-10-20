@@ -76,7 +76,7 @@ const Footer = () => {
         </div>
 
         {/* Newsletter Section */}
-        <div className="newsletter-section">
+        <div className="newsletter-section" id="contact">
           <div className="newsletter-content">
             <h3 className="newsletter-title">
               📧 Pretplati se na newsletter
