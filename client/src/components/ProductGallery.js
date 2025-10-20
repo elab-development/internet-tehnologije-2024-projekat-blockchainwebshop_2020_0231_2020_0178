@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import './ProductGallery.css';
-import defaultProducts from '../data/products';
 
 const ProductGallery = ({ products, onBuy, account, onRefresh }) => {
   const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('name');
 
-  // Koristi blockchain proizvode ako postoje, inače koristi default proizvode iz deploy skripte
-  const displayProducts = products && products.length > 0 ? products : defaultProducts;
+  // Koristi isključivo proizvode sa blockchaina
+  const displayProducts = products || [];
 
   const filteredProducts = displayProducts.filter(product => {
     if (filter === 'all') return true;

@@ -315,7 +315,7 @@ const useWeb3 = () => {
   const [contract, setContract] = useState(null);
   const [chainId, setChainId] = useState(null);
   const [error, setError] = useState(null);
-  const [isConnecting, setIsConnecting] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);  
 
   // Proveri da li je MetaMask instaliran
   const isMetaMaskInstalled = () => {
@@ -502,102 +502,44 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
   // PRAVE blockchain funkcije
   const loadProducts = useCallback(async () => {
     console.log("📡 Učitavam proizvode sa blockchain-a...");
-    
+
     if (!provider || chainId !== 31337) {
       console.log("⚠️ Koristim mock podatke - nisam na local mreži");
-      // Mock podaci ako nismo na local blockchain-u
-      return [
-        { 
-          id: 1, 
-          name: "Real Madrid Home", 
-          price: "0.1", 
-          stock: 5, 
-          image: "⚪",
-          description: "Zvanični dres Real Madrid-a",
-          features: ["Originalni", "Breathable", "Unisex"]
-        },
-        { 
-          id: 2, 
-          name: "Barcelona Home", 
-          price: "0.12", 
-          stock: 3, 
-          image: "🔵",
-          description: "Zvanični dres FC Barcelona",
-          features: ["Premium", "Moisture-Wicking", "Limited"]
-        },
-        { 
-          id: 3, 
-          name: "Manchester United Home", 
-          price: "0.11", 
-          stock: 7, 
-          image: "🔴",
-          description: "Zvanični dres Manchester United-a",
-          features: ["Classic", "Comfortable", "Popular"]
-        },
-        { 
-          id: 4, 
-          name: "Bayern Munich Home", 
-          price: "0.13", 
-          stock: 4, 
-          image: "🔴",
-          description: "Zvanični dres Bayern München",
-          features: ["Premium", "German Quality", "Exclusive"]
-        },
-        { 
-          id: 5, 
-          name: "PSG Home", 
-          price: "0.14", 
-          stock: 6, 
-          image: "💙",
-          description: "Zvanični dres Paris Saint-Germain",
-          features: ["Luxury", "French Design", "Modern"]
-        },
-        { 
-          id: 6, 
-          name: "Liverpool Home", 
-          price: "0.12", 
-          stock: 8, 
-          image: "🔴",
-          description: "Zvanični dres Liverpool FC",
-          features: ["Champion", "Quality", "Iconic"]
-        }
-      ];
+      // Prazna lista ako nismo na local blockchain-u
+      return [];
     }
 
     // PRAVI blockchain poziv!
     try {
       const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, WEBSHOP_ABI, provider);
-      
+      // Prvo dohvati nextProductId da znaš do kog ID-a da ideš
+      const nextProductId = await contractInstance.nextProductId();
       const products = [];
-      let productId = 1;
-      
-      // Učitaj proizvode iz smart contract-a
-      while (true) {
+      const productImages = ["⚪", "🔵", "🔴", "🔴", "💙", "🔴"];
+      const productDescriptions = [
+        "Zvanični dres Real Madrid-a",
+        "Zvanični dres FC Barcelona", 
+        "Zvanični dres Manchester United-a",
+        "Zvanični dres Bayern München",
+        "Zvanični dres Paris Saint-Germain",
+        "Zvanični dres Liverpool FC"
+      ];
+      const productFeatures = [
+        ["Originalni", "Breathable", "Unisex"],
+        ["Premium", "Moisture-Wicking", "Limited"],
+        ["Classic", "Comfortable", "Popular"],
+        ["Premium", "German Quality", "Exclusive"],
+        ["Luxury", "French Design", "Modern"],
+        ["Champion", "Quality", "Iconic"]
+      ];
+
+      for (let productId = 1; productId < nextProductId; productId++) {
         try {
           const product = await contractInstance.products(productId);
-          
           if (product.id.toString() === "0") {
-            break; // Nema više proizvoda
+            // Ovaj slot je obrisan, preskoči
+            continue;
           }
-          
-          const productImages = ["⚪", "🔵", "🔴", "🔴", "💙", "🔴"];
-          const productDescriptions = [
-            "Zvanični dres Real Madrid-a",
-            "Zvanični dres FC Barcelona", 
-            "Zvanični dres Manchester United-a",
-            "Zvanični dres Bayern München",
-            "Zvanični dres Paris Saint-Germain",
-            "Zvanični dres Liverpool FC"
-          ];
-          const productFeatures = [
-            ["Originalni", "Breathable", "Unisex"],
-            ["Premium", "Moisture-Wicking", "Limited"],
-            ["Classic", "Comfortable", "Popular"],
-            ["Premium", "German Quality", "Exclusive"],
-            ["Luxury", "French Design", "Modern"],
-            ["Champion", "Quality", "Iconic"]
-          ];
-          
           products.push({
             id: product.id.toNumber(),
             name: product.name,
@@ -607,14 +549,12 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
             description: productDescriptions[productId - 1] || "Zvanični fudbalski dres",
             features: productFeatures[productId - 1] || ["Premium", "Quality", "Original"]
           });
-          
-          productId++;
         } catch (error) {
-          console.log(`📋 Učitano ${products.length} proizvoda sa blockchain-a`);
-          break;
+          console.warn(`Greška pri učitavanju proizvoda ID ${productId}:`, error);
+          continue;
         }
       }
-      
+      console.log(`📋 Učitano ${products.length} proizvoda sa blockchain-a`);
       return products;
     } catch (error) {
       console.error("❌ Greška pri učitavanju proizvoda:", error);

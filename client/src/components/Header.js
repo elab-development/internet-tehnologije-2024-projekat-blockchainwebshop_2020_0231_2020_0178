@@ -8,6 +8,15 @@ const Header = ({ account, chainId, onConnect, onDisconnect, onSwitchToLocalhost
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const handleNavClick = (e, targetId) => {
+    e.preventDefault();
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setIsMenuOpen(false); // Close mobile menu after click
+    }
+  };
+
   const formatAddress = (address) => {
     if (!address) return '';
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -33,10 +42,10 @@ const Header = ({ account, chainId, onConnect, onDisconnect, onSwitchToLocalhost
         </div>
 
         <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
-          <a href="#home" className="nav-link">Početna</a>
-          <a href="#products" className="nav-link">Dresovi</a>
-          <a href="#about" className="nav-link">O nama</a>
-          <a href="#contact" className="nav-link">Kontakt</a>
+          <a href="#home" className="nav-link" onClick={(e) => handleNavClick(e, 'home')}>Početna</a>
+          <a href="#about" className="nav-link" onClick={(e) => handleNavClick(e, 'about')}>O nama</a>
+          <a href="#products" className="nav-link" onClick={(e) => handleNavClick(e, 'products')}>Dresovi</a>
+          <a href="#contact" className="nav-link" onClick={(e) => handleNavClick(e, 'contact')}>Kontakt</a>
         </nav>
 
         <div className="header-actions">

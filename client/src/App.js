@@ -4,6 +4,7 @@ import './App.css';
 // Components
 import Header from './components/Header';
 import Hero from './components/Hero';
+import About from './components/About';
 import ProductGallery from './components/ProductGallery';
 import MyPurchases from './components/MyPurchases';
 import PurchaseModal from './components/PurchaseModal';
@@ -111,7 +112,7 @@ function App() {
       const handleAccountsChanged = (accounts) => {
         console.log('🔄 MetaMask accounts changed:', accounts);
         if (accounts.length === 0) {
-          // Korisnik se diskonektovao
+          // Korisnik se diskonektovaoi
           handleDisconnectWallet();
         } else if (accounts[0] !== accountRef.current) {
           // Account se promenio - force refresh
@@ -284,6 +285,9 @@ function App() {
       <main>
         {/* Hero Section */}
         <Hero onShopNow={handleShopNow} />
+
+        {/* About Section */}
+        <About />
 
         {/* Product Gallery */}
         <ProductGallery 
