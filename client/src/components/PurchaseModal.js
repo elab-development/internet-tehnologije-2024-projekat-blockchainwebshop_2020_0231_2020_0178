@@ -13,13 +13,12 @@ const PurchaseModal = ({
   const [selectedSize, setSelectedSize] = useState('M');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
-  const [purchaseStep, setPurchaseStep] = useState('details'); // details, confirm, processing, success, error
+  const [purchaseStep, setPurchaseStep] = useState('details'); 
 
   const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
   useEffect(() => {
     if (isOpen) {
-      // Reset state kada se modal otvori
       setQuantity(1);
       setSelectedSize('M');
       setAgreedToTerms(false);
@@ -36,7 +35,7 @@ const PurchaseModal = ({
   const calculateTotal = () => {
     if (!product) return { eth: '0', usd: '0' };
     const ethTotal = (parseFloat(product.price) * quantity).toFixed(6);
-    const usdTotal = (parseFloat(ethTotal) * 2400).toFixed(2); // Aproksimativna ETH/USD konverzija
+    const usdTotal = (parseFloat(ethTotal) * 2400).toFixed(2); 
     return { eth: ethTotal, usd: usdTotal };
   };
 
@@ -49,13 +48,11 @@ const PurchaseModal = ({
     try {
       const tx = await onPurchase(product.id, quantity);
       
-      // Čekaj da se transakcija potvrdi
       setPurchaseStep('confirming');
       await tx.wait();
       
       setPurchaseStep('success');
       
-      // Zatvori modal nakon 3 sekunde
       setTimeout(() => {
         onClose();
       }, 3000);
@@ -82,7 +79,6 @@ const PurchaseModal = ({
     <div className="modal-overlay" onClick={handleClose}>
       <div className="purchase-modal" onClick={(e) => e.stopPropagation()}>
         
-        {/* Header */}
         <div className="modal-header">
           <h2 className="modal-title">
             {purchaseStep === 'details' && '🛒 Detalji Kupovine'}
@@ -99,12 +95,10 @@ const PurchaseModal = ({
           )}
         </div>
 
-        {/* Content based on step */}
         <div className="modal-content">
           
           {purchaseStep === 'details' && (
             <>
-              {/* Product Info */}
               <div className="product-summary">
                 <div className="product-image-small">
                   <span className="jersey-emoji-small">{product.image}</span>
@@ -116,7 +110,6 @@ const PurchaseModal = ({
                 </div>
               </div>
 
-              {/* Size Selection */}
               <div className="selection-group">
                 <label className="selection-label">Veličina:</label>
                 <div className="size-options">
@@ -132,7 +125,6 @@ const PurchaseModal = ({
                 </div>
               </div>
 
-              {/* Quantity Selection */}
               <div className="selection-group">
                 <label className="selection-label">Količina:</label>
                 <div className="quantity-controls">
@@ -154,7 +146,6 @@ const PurchaseModal = ({
                 </div>
               </div>
 
-              {/* Total */}
               <div className="total-section">
                 <div className="total-row">
                   <span>Ukupno ({quantity}x):</span>
@@ -165,7 +156,6 @@ const PurchaseModal = ({
                 </div>
               </div>
 
-              {/* Terms Agreement */}
               <div className="terms-section">
                 <label className="terms-checkbox">
                   <input
@@ -179,7 +169,6 @@ const PurchaseModal = ({
                 </label>
               </div>
 
-              {/* Purchase Button */}
               <button 
                 className={`purchase-button ${!agreedToTerms ? 'disabled' : ''}`}
                 onClick={() => setPurchaseStep('confirm')}

@@ -8,10 +8,8 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-container">
         
-        {/* Main Footer Content */}
         <div className="footer-main">
           
-          {/* Brand Section */}
           <div className="footer-section brand-section">
             <div className="footer-logo">
               <span className="footer-logo-icon">👕</span>
@@ -37,7 +35,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div className="footer-section">
             <h3 className="footer-title">Brzi linkovi</h3>
             <ul className="footer-links">
@@ -49,7 +46,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Blockchain Info */}
           <div className="footer-section">
             <h3 className="footer-title">Blockchain</h3>
             <ul className="footer-links">
@@ -61,7 +57,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Legal & Support */}
           <div className="footer-section">
             <h3 className="footer-title">Podrška</h3>
             <ul className="footer-links">
@@ -75,7 +70,6 @@ const Footer = () => {
 
         </div>
 
-        {/* Newsletter Section */}
         <div className="newsletter-section" id="contact">
           <div className="newsletter-content">
             <h3 className="newsletter-title">
@@ -97,7 +91,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Blockchain Stats */}
         <div className="blockchain-stats">
           <div className="stat-item">
             <span className="stat-icon">⛓️</span>
@@ -132,7 +125,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Footer Bottom */}
         <div className="footer-bottom">
           <div className="footer-bottom-content">
             <div className="copyright">

@@ -12,7 +12,7 @@ const MyPurchases = ({ loadUserPurchases, isConnected, purchasesTrigger }) => {
     } else {
       setPurchases([]);
     }
-  }, [isConnected, purchasesTrigger]); // Dodao purchasesTrigger u dependency array
+  }, [isConnected, purchasesTrigger]); 
 
   const loadPurchases = async () => {
     setIsLoading(true);
@@ -20,7 +20,6 @@ const MyPurchases = ({ loadUserPurchases, isConnected, purchasesTrigger }) => {
       const userPurchases = await loadUserPurchases();
       setPurchases(userPurchases);
       
-      // Izračunaj ukupno potrošeno
       const total = userPurchases.reduce((sum, purchase) => {
         return sum + parseFloat(purchase.totalSpent);
       }, 0);

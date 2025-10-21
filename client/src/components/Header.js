@@ -13,7 +13,7 @@ const Header = ({ account, chainId, onConnect, onDisconnect, onSwitchToLocalhost
     const element = document.getElementById(targetId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setIsMenuOpen(false); // Close mobile menu after click
+      setIsMenuOpen(false); 
     }
   };
 

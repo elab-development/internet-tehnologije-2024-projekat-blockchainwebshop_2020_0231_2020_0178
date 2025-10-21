@@ -12,7 +12,6 @@ const AdminPanel = ({
   const [activeTab, setActiveTab] = useState('add');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Form states
   const [newProduct, setNewProduct] = useState({
     name: '',
     price: '',
@@ -33,7 +32,6 @@ const AdminPanel = ({
     productId: ''
   });
 
-  // Handle Add Product
   const handleAddProduct = async (e) => {
     e.preventDefault();
     if (!newProduct.name || !newProduct.price || !newProduct.stock) {
@@ -53,7 +51,6 @@ const AdminPanel = ({
     }
   };
 
-  // Handle Update Price
   const handleUpdatePrice = async (e) => {
     e.preventDefault();
     if (!updateData.productId || !updateData.newPrice) {
@@ -73,7 +70,6 @@ const AdminPanel = ({
     }
   };
 
-  // Handle Restock
   const handleRestock = async (e) => {
     e.preventDefault();
     if (!restockData.productId || !restockData.quantity) {
@@ -93,7 +89,6 @@ const AdminPanel = ({
     }
   };
 
-  // Handle Remove Product
   const handleRemoveProduct = async (e) => {
     e.preventDefault();
     if (!removeData.productId) {
@@ -138,7 +133,6 @@ const AdminPanel = ({
           <p>Upravljajte proizvodima u vašoj prodavnici</p>
         </div>
 
-        {/* Products Overview */}
         <div className="products-overview">
           <h3>📊 Pregled Proizvoda</h3>
           <div className="products-grid-admin">
@@ -155,7 +149,6 @@ const AdminPanel = ({
           </div>
         </div>
 
-        {/* Tab Navigation */}
         <div className="admin-tabs">
           <button 
             className={`tab-btn ${activeTab === 'add' ? 'active' : ''}`}

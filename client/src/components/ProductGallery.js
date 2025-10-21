@@ -5,7 +5,6 @@ const ProductGallery = ({ products, onBuy, account, onRefresh }) => {
   const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('name');
 
-  // Koristi isključivo proizvode sa blockchaina
   const displayProducts = products || [];
 
   const filteredProducts = displayProducts.filter(product => {
