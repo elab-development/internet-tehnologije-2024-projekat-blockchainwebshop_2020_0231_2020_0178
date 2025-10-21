@@ -3,8 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ethers } from 'ethers';
 
-// WebShop contract podaci
-// WebShop contract podaci
+
 const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; 
 
 const WEBSHOP_ABI = [
@@ -317,22 +316,18 @@ const useWeb3 = () => {
   const [error, setError] = useState(null);
   const [isConnecting, setIsConnecting] = useState(false);  
 
-  // Proveri da li je MetaMask instaliran
   const isMetaMaskInstalled = () => {
     return typeof window !== 'undefined' && 
            typeof window.ethereum !== 'undefined' && 
            window.ethereum.isMetaMask;
   };
 
-  // JEDNOSTAVAN pristup za konekciju (sa anti-conflict logikom)
   async function connectWallet() {
     try {
       console.log("🔄 Pokušavam povezivanje kroz ethers v5...");
       
-      // 🔧 ANTI-CONFLICT: Onemogući ostale wallet providere
       console.log("🛡️ Onemogućujem conflicting wallet providere...");
       
-      // Detektuj conflicting wallets (bez brisanja read-only properties)
       const conflictingWallets = [];
       
       if (window.solana) {
@@ -350,19 +345,16 @@ const useWeb3 = () => {
         conflictingWallets.push("WalletConnect");
       }
       
-      // Ako ima conflicting wallets, prikaži upozorenje
       if (conflictingWallets.length > 0) {
         console.warn(`⚠️ Detektovani conflicting wallets: ${conflictingWallets.join(", ")}`);
         console.warn("💡 Preporučujem da onemogućite ostale wallet extension-e");
       }
       
-      // Forsiraj da window.ethereum bude samo MetaMask
       let ethereumProvider = window.ethereum;
       
       if (ethereumProvider && !ethereumProvider.isMetaMask) {
         console.log("� Tražim MetaMask među providerima...");
         
-        // Probaj da nađeš MetaMask među providerima
         if (ethereumProvider.providers && Array.isArray(ethereumProvider.providers)) {
           const metamaskProvider = ethereumProvider.providers.find(provider => provider.isMetaMask);
           if (metamaskProvider) {
@@ -391,17 +383,14 @@ REŠENJE: Onemogućite ostale wallet extension-e: ${conflictingWallets.join(", "
       
 
 
-      // Koristi MetaMask provider umesto window.ethereum
       const provider = new ethers.providers.Web3Provider(ethereumProvider);
 
-      // Zatraži pristup nalogu
       await provider.send("eth_requestAccounts", []);
 
       const signer = provider.getSigner();
       const address = await signer.getAddress();
       const network = await provider.getNetwork();
 
-      // Postavi state vrednosti
       setAccount(address);
       setProvider(provider);
       setSigner(signer);
@@ -449,7 +438,6 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
     console.log('👋 Wallet diskonektovan');
   }, []);
 
-  // Funkcija za prebacivanje na localhost mrežu
   const switchToLocalhost = useCallback(async () => {
     if (!window.ethereum) {
       throw new Error("MetaMask nije instaliran!");
@@ -458,27 +446,25 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
     try {
       console.log("🔄 Dodajem localhost mrežu u MetaMask...");
       
-      // Prvo pokušaj da dodaš mrežu
       await window.ethereum.request({
         method: 'wallet_addEthereumChain',
         params: [
           {
-            chainId: '0x7a69', // 31337 u hex
-            chainName: 'Hardhat Development', // Promenio ime da bude jedinstveno
+            chainId: '0x7a69', 
+            chainName: 'Hardhat Development', 
             nativeCurrency: {
               name: 'Ether',
               symbol: 'ETH',
               decimals: 18,
             },
-            rpcUrls: ['http://localhost:8545'], // Koristi localhost
-            blockExplorerUrls: [], // Prazan niz umesto null
+            rpcUrls: ['http://localhost:8545'],
+            blockExplorerUrls: [], 
           },
         ],
       });
       
       console.log("✅ Localhost mreža dodana u MetaMask!");
       
-      // Zatim se prebaci na nju
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: '0x7a69' }], // 31337 u hex
@@ -499,20 +485,16 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
     }
   }, []);
 
-  // PRAVE blockchain funkcije
   const loadProducts = useCallback(async () => {
     console.log("📡 Učitavam proizvode sa blockchain-a...");
 
     if (!provider || chainId !== 31337) {
       console.log("⚠️ Koristim mock podatke - nisam na local mreži");
-      // Prazna lista ako nismo na local blockchain-u
       return [];
     }
 
-    // PRAVI blockchain poziv!
     try {
       const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, WEBSHOP_ABI, provider);
-      // Prvo dohvati nextProductId da znaš do kog ID-a da ideš
       const nextProductId = await contractInstance.nextProductId();
       const products = [];
       const productImages = ["⚪", "🔵", "🔴", "🔴", "💙", "🔴"];
@@ -537,7 +519,6 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
         try {
           const product = await contractInstance.products(productId);
           if (product.id.toString() === "0") {
-            // Ovaj slot je obrisan, preskoči
             continue;
           }
           products.push({
@@ -569,15 +550,12 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
       throw new Error("Wallet nije konektovan");
     }
 
-    // Ako nismo na localhost mreži, pokušaj automatski da se prebacimo
     if (chainId !== 31337) {
       console.log(`🔄 Trenutna mreža: ${chainId}, prebacujem na localhost (31337)...`);
       try {
         await switchToLocalhost();
-        // Sačekaj da se mreža promeni i provider obnovi
         await new Promise(resolve => setTimeout(resolve, 2000));
         
-        // Proveri da li je prebacivanje uspelo
         const newNetwork = await provider.getNetwork();
         if (newNetwork.chainId !== 31337) {
           throw new Error("Prebacivanje na localhost mrežu nije uspelo");
@@ -591,16 +569,13 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
     }
 
     try {
-      // Kreiraj contract instancu sa signer-om
       const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, WEBSHOP_ABI, signer);
       
-      // Prvo dobij cenu proizvoda
       const product = await contractInstance.products(productId);
       if (product.id.toString() === "0") {
         throw new Error("Proizvod ne postoji");
       }
       
-      // Izračunaj ukupnu cenu (cena * količina)
       const totalPriceInWei = product.price.mul(quantity);
       
       console.log(`🔗 Pozivam smart contract za kupovinu...`);
@@ -631,7 +606,6 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
     } catch (error) {
       console.error("❌ Greška pri kupovini:", error);
       
-      // Prepoznaj različite tipove grešaka
       if (error.code === 4001) {
         throw new Error("Transakcija otkazana od strane korisnika");
       } else if (error.message.includes("insufficient funds")) {
@@ -658,7 +632,6 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
     try {
       const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, WEBSHOP_ABI, provider);
       
-      // Dobij array ID-jeva kupljenih proizvoda
       console.log("📡 Pozivam getBuyerPurchases za account:", account);
       const purchasedIds = await contractInstance.getBuyerPurchases(account);
       console.log("📋 Raw purchased IDs:", purchasedIds);
@@ -668,14 +641,12 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
         return [];
       }
 
-      // Grupuj po ID-ju da dobijemo količine
       const purchaseCount = {};
       purchasedIds.forEach(id => {
         const idNum = id.toNumber();
         purchaseCount[idNum] = (purchaseCount[idNum] || 0) + 1;
       });
 
-      // Učitaj detalje proizvoda
       const purchases = [];
       for (const [productId, quantity] of Object.entries(purchaseCount)) {
         try {
@@ -715,7 +686,6 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
     }
   }, [account, provider, chainId]);
 
-  // ADMIN FUNKCIJE za vlasnika contract-a
   const addProduct = useCallback(async (name, priceETH, stock) => {
     console.log(`👑 Admin: Dodajem proizvod "${name}" za ${priceETH} ETH, stock: ${stock}`);
     
@@ -730,7 +700,6 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
     try {
       const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, WEBSHOP_ABI, signer);
       
-      // Konvertuj ETH u wei
       const priceInWei = ethers.utils.parseEther(priceETH.toString());
       
       console.log(`💰 Cena u wei: ${priceInWei.toString()}`);
@@ -873,7 +842,6 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
       setChainId(parseInt(chainId, 16));
     };
 
-    // Dodaj listeners
     if (window.ethereum.on) {
       window.ethereum.on('accountsChanged', handleAccountsChanged);
       window.ethereum.on('chainChanged', handleChainChanged);
@@ -895,18 +863,18 @@ evmAsk.js greška znači da se neki drugi wallet provider meša sa MetaMask-om.`
     isConnecting,
     connectWallet,
     disconnectWallet,
-    switchToLocalhost, // Dodao switchToLocalhost funkciju
+    switchToLocalhost, 
     isMetaMaskInstalled,
-    isConnected: !!account, // Dodao isConnected property
-    loadProducts, // Dodao loadProducts funkciju
-    buyProduct, // Dodao buyProduct funkciju
-    loadUserPurchases, // Dodao loadUserPurchases funkciju
+    isConnected: !!account, 
+    loadProducts, 
+    buyProduct, 
+    loadUserPurchases, 
     // ADMIN FUNKCIJE
-    addProduct, // Dodavanje novog proizvoda
-    updatePrice, // Ažuriranje cene proizvoda
-    restockProduct, // Dopunjavanje stock-a
-    removeProduct, // Uklanjanje proizvoda
-    checkIsOwner, // Provera da li je korisnik vlasnik
+    addProduct, 
+    updatePrice, 
+    restockProduct, 
+    removeProduct,
+    checkIsOwner, 
   };
 };
 

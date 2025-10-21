@@ -3,17 +3,14 @@ const { ethers } = require("hardhat");
 async function main() {
   console.log("🚀 Deploying WebShop contract...");
 
-  // Deploy WebShop contract
   const WebShop = await ethers.getContractFactory("WebShop");
   const webShop = await WebShop.deploy();
   
-  // Čekaj da se deploy završi (nova sintaksa)
   await webShop.waitForDeployment();
   
   console.log("✅ WebShop deployed to:", await webShop.getAddress());
   console.log("📄 Contract owner:", await webShop.owner());
   
-  // Dodaj početne proizvode
   console.log("\n🛒 Adding initial products...");
   
   const products = [
@@ -37,7 +34,6 @@ async function main() {
   console.log("📋 Network: localhost:8545");
   console.log("📋 Chain ID: 31337");
   
-  // Sačuvaj contract address u environment file
   console.log("\n💾 Saving contract address...");
   console.log(`Add this to your .env file:`);
   console.log(`REACT_APP_CONTRACT_ADDRESS=${await webShop.getAddress()}`);
