@@ -3,14 +3,19 @@ import './App.css';
 
 import Header from './components/Header';
 import Hero from './components/Hero';
-import About from './components/About';
+// import About from './components/About';
 import ProductGallery from './components/ProductGallery';
 import MyPurchases from './components/MyPurchases';
 import PurchaseModal from './components/PurchaseModal';
 import AdminPanel from './components/AdminPanel';
 import Footer from './components/Footer';
+// import HappyCustomers from './components/HappyCustomers';
+import HappyCustomersPage from './pages/HappyCustomersPage';
+import AboutPage from './pages/AboutPage';
 
 import useWeb3 from './hooks/useWeb3';
+
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
   const {
@@ -233,88 +238,89 @@ function App() {
   };
 
   return (
-    <div className="App">
-      {notification && (
-        <div className={`notification ${notification.type}`}>
-          {notification.message}
-        </div>
-      )}
-
-      <Header 
-        account={account}
-        chainId={chainId}
-        onConnect={handleConnectWallet}
-        onDisconnect={handleDisconnectWallet}
-        onSwitchToLocalhost={switchToLocalhost}
-      />
-
-      <main>
-        <Hero onShopNow={handleShopNow} />
-
-        <About />
-
-        <ProductGallery 
-          key={`products-${account || 'disconnected'}`}
-          products={products}
-          onBuy={handleBuyProduct}
-          account={account}
-          onRefresh={() => setProductsTrigger(prev => prev + 1)}
-        />
-
-        {isOwner && (
-          <AdminPanel
-            onAddProduct={handleAdminAddProduct}
-            onUpdatePrice={handleAdminUpdatePrice}
-            onRestockProduct={handleAdminRestockProduct}
-            onRemoveProduct={handleAdminRemoveProduct}
-            products={products}
-            isLoading={isLoading}
-          />
-        )}
-
-        <MyPurchases 
-          loadUserPurchases={loadUserPurchases}
-          isConnected={isConnected}
-          purchasesTrigger={purchasesTrigger}
-        />
-
-        {isLoading && (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p>Učitavanje...</p>
+    <BrowserRouter>
+      <div className="App">
+        {notification && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
           </div>
         )}
 
-        {web3Error && (
-          <div className="error-container">
-            <div className="error-message">
-              ⚠️ {web3Error}
+        <Header 
+          account={account}
+          chainId={chainId}
+          onConnect={handleConnectWallet}
+          onDisconnect={handleDisconnectWallet}
+          onSwitchToLocalhost={switchToLocalhost}
+        />
+
+        <Routes>
+          <Route path="/happy-customers" element={<HappyCustomersPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/" element={
+            <main>
+              <Hero onShopNow={handleShopNow} />
+              <ProductGallery 
+                key={`products-${account || 'disconnected'}`}
+                products={products}
+                onBuy={handleBuyProduct}
+                account={account}
+                onRefresh={() => setProductsTrigger(prev => prev + 1)}
+              />
+              {isOwner && (
+                <AdminPanel
+                  onAddProduct={handleAdminAddProduct}
+                  onUpdatePrice={handleAdminUpdatePrice}
+                  onRestockProduct={handleAdminRestockProduct}
+                  onRemoveProduct={handleAdminRemoveProduct}
+                  products={products}
+                  isLoading={isLoading}
+                />
+              )}
+              <MyPurchases 
+                loadUserPurchases={loadUserPurchases}
+                isConnected={isConnected}
+                purchasesTrigger={purchasesTrigger}
+              />
+              {isLoading && (
+                <div className="loading-container">
+                  <div className="loading-spinner"></div>
+                  <p>Učitavanje...</p>
+                </div>
+              )}
+              {web3Error && (
+                <div className="error-container">
+                  <div className="error-message">
+                    ⚠️ {web3Error}
+                  </div>
+                </div>
+              )}
+            </main>
+          } />
+        </Routes>
+
+        <Footer />
+
+        <PurchaseModal 
+          isOpen={isPurchaseModalOpen}
+          onClose={handleCloseModal}
+          product={selectedProduct}
+          onPurchase={handlePurchaseConfirm}
+          account={account}
+          isLoading={isLoading}
+        />
+
+        {isConnecting && (
+          <div className="global-loading-overlay">
+            <div className="global-loading-content">
+              <div className="loading-spinner"></div>
+              <h3>Konektovanje wallet-a...</h3>
+              <p>Molim vas potvrdite konekciju u MetaMask-u</p>
             </div>
           </div>
         )}
-      </main>
-
-      <Footer />
-
-      <PurchaseModal 
-        isOpen={isPurchaseModalOpen}
-        onClose={handleCloseModal}
-        product={selectedProduct}
-        onPurchase={handlePurchaseConfirm}
-        account={account}
-        isLoading={isLoading}
-      />
-
-      {isConnecting && (
-        <div className="global-loading-overlay">
-          <div className="global-loading-content">
-            <div className="loading-spinner"></div>
-            <h3>Konektovanje wallet-a...</h3>
-            <p>Molim vas potvrdite konekciju u MetaMask-u</p>
-          </div>
-        </div>
-      )}
-    </div>
+      </div>
+    </BrowserRouter>
   );
 }
 

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './Header.css';
 
 const Header = ({ account, chainId, onConnect, onDisconnect, onSwitchToLocalhost }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -10,10 +13,15 @@ const Header = ({ account, chainId, onConnect, onDisconnect, onSwitchToLocalhost
 
   const handleNavClick = (e, targetId) => {
     e.preventDefault();
+    if (targetId === 'home') {
+      navigate('/');
+      setIsMenuOpen(false);
+      return;
+    }
     const element = document.getElementById(targetId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setIsMenuOpen(false); 
+      setIsMenuOpen(false);
     }
   };
 
@@ -42,10 +50,9 @@ const Header = ({ account, chainId, onConnect, onDisconnect, onSwitchToLocalhost
         </div>
 
         <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
-          <a href="#home" className="nav-link" onClick={(e) => handleNavClick(e, 'home')}>Početna</a>
-          <a href="#about" className="nav-link" onClick={(e) => handleNavClick(e, 'about')}>O nama</a>
-          <a href="#products" className="nav-link" onClick={(e) => handleNavClick(e, 'products')}>Dresovi</a>
-          <a href="#contact" className="nav-link" onClick={(e) => handleNavClick(e, 'contact')}>Kontakt</a>
+          <a href="#home" className="nav-link" onClick={e => { e.preventDefault(); navigate('/'); setIsMenuOpen(false); }}>Početna</a>
+          <a href="/happy-customers" className={`nav-link${location.pathname === '/happy-customers' ? ' active' : ''}`} onClick={e => { e.preventDefault(); navigate('/happy-customers'); setIsMenuOpen(false); }}>Zadovoljni kupci</a>
+          <a href="/about" className={`nav-link${location.pathname === '/about' ? ' active' : ''}`} onClick={e => { e.preventDefault(); navigate('/about'); setIsMenuOpen(false); }}>O nama</a>
         </nav>
 
         <div className="header-actions">
